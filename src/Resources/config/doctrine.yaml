@@ -1,0 +1,3 @@
+services:
+    Doctrine\Common\Annotations\Reader:
+        class: Doctrine\Common\Annotations\Reader
