@@ -1,0 +1,36 @@
+{
+    "name": "php-shark-tank/anonymizer-bundle",
+    "description": "Symfony bundle to integrate anonymizer component into a symfony application",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "require": {
+        "php-shark-tank/anonymizer": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPSharkTank\\AnonymizerBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PHPSharkTank\\AnonymizerBundle\\Tests\\": "tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "Eric Hertwig",
+            "email": "eric@ehdev.de"
+        },
+        {
+            "name": "Markus Bachmann",
+            "email": "markus.bachmann@bachi.biz"
+        }
+    ],
+    "config": {
+        "bin-dir": "bin",
+        "sort-packages": true
+    }
+}
