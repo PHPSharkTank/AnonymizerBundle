@@ -51,3 +51,10 @@ services:
             - '@PHPSharkTank\Anonymizer\Visitor\GraphNavigator'
 
     PHPSharkTank\Anonymizer\AnonymizerInterface: '@PHPSharkTank\Anonymizer\Anonymizer'
+
+    PHPSharkTank\Anonymizer\EventSubscriber\LifecycleCallbackSubscriber:
+        arguments:
+            - '@PHPSharkTank\Anonymizer\Loader\LoaderInterface'
+        tags:
+            - { name: kernel.event_listener, event: PHPSharkTank\Anonymizer\Event\PreAnonymizeEvent, method: 'onPreAnonymize', priority: 1000}
+            - { name: kernel.event_listener, event: PHPSharkTank\Anonymizer\Event\PostAnonymizeEvent, method: 'onPostAnonymize', priority: -1000}
