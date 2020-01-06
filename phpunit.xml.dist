@@ -2,8 +2,14 @@
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          backupGlobals="false"
+         backupStaticAttributes="false"
          colors="true"
-         beStrictAboutTestsThatDoNotTestAnything="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         bootstrap="vendor/autoload.php"
 >
     <testsuites>
         <testsuite name="AnonymizerBundle test suite">
