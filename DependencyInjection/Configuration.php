@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHPSharkTank\AnonymizerBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -12,9 +13,8 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('sharktank_anonymizer');
-        $root = $treeBuilder->getRootNode();
 
-        $root
+        $this->getRootNode($treeBuilder, 'sharktank_anonymizer')
             ->children()
                 ->booleanNode('enable_alias')->defaultTrue()->end()
                 ->arrayNode('exclusion_strategy')
@@ -49,4 +49,17 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
+    /**
+     * Proxy to get root node for Symfony < 4.2.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getRootNode(TreeBuilder $treeBuilder, string $name)
+    {
+        if (\method_exists($treeBuilder, 'getRootNode')) {
+            return $treeBuilder->getRootNode();
+        } else {
+            return $treeBuilder->root($name);
+        }
+    }
 }
