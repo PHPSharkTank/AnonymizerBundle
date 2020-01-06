@@ -1,3 +1,0 @@
-services:
-    Faker\Generator:
-        factory: ['Faker\Factory', 'create']

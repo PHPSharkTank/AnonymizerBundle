@@ -1,0 +1,7 @@
+framework:
+    annotations: true
+
+sharktank_anonymizer:
+    exclusion_strategy:
+        expression:
+            enabled: true

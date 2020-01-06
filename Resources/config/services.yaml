@@ -1,0 +1,35 @@
+services:
+    sharktank_anonymizer.handler.callback:
+        class: PHPSharkTank\Anonymizer\Handler\CallbackHandler
+        tags:
+            - { name: 'sharktank.anonymizer.handler' }
+
+    sharktank_anonymizer.handler.null:
+        class: PHPSharkTank\Anonymizer\Handler\NullHandler
+        tags:
+            - { name: 'sharktank.anonymizer.handler' }
+
+    sharktank_anonymizer.handler.simple_registry:
+        class: PHPSharkTank\Anonymizer\Registry\HandlerRegistry
+        arguments: [[]]
+
+    sharktank_anonymizer.handler_registry:
+        class: PHPSharkTank\Anonymizer\Registry\ChainHandlerRegistry
+        arguments: [[]]
+
+    sharktank_anonymizer.graph_navigator:
+        class: PHPSharkTank\Anonymizer\Visitor\GraphNavigator
+        arguments:
+            - '@sharktank_anonymizer.mapping_loader'
+            - '@sharktank_anonymizer.handler_registry'
+            - '@sharktank_anonymizer.exclusion_strategy'
+            - '@event_dispatcher'
+
+    sharktank_anonymizer.exclusion_strategy:
+        class: PHPSharkTank\Anonymizer\ExclusionStrategy\ChainExclusionStrategy
+        arguments: [[]]
+
+    sharktank_anonymizer.anonymizer:
+        class: PHPSharkTank\Anonymizer\Anonymizer
+        public: true
+        arguments: ['@sharktank_anonymizer.graph_navigator']

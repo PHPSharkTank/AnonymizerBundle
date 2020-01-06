@@ -1,0 +1,6 @@
+services:
+    sharktank_anonymizer.mapping.annotation_loader:
+        class: PHPSharkTank\Anonymizer\Loader\AnnotationLoader
+        arguments: ['@annotations.reader']
+
+    sharktank_anonymizer.mapping_loader: '@sharktank_anonymizer.mapping.annotation_loader'

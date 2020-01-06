@@ -1,0 +1,4 @@
+framework:
+    annotations: true
+
+sharktank_anonymizer: ~

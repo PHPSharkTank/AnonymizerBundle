@@ -1,0 +1,9 @@
+framework:
+    annotations: true
+    cache:
+        system: cache.adapter.system
+
+sharktank_anonymizer:
+    cache:
+        enabled: true
+        pool: system

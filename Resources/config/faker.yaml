@@ -1,0 +1,12 @@
+services:
+    sharktank_anonymizer.handler.faker:
+        class: PHPSharkTank\Anonymizer\Handler\FakerHandler
+        arguments: ['@sharktank_anonymizer.faker', 'faker']
+        tags:
+            - { name: 'sharktank.anonymizer.handler' }
+
+    sharktank_anonymizer.handler_registry.faker:
+        class: PHPSharkTank\Anonymizer\Registry\FakerHandlerRegistry
+        arguments: ['@sharktank_anonymizer.faker']
+        tags:
+            - { name: 'sharktank.anonymizer.handler_registry' }

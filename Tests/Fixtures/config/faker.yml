@@ -1,0 +1,9 @@
+framework:
+    annotations: true
+
+sharktank_anonymizer:
+    faker: ~
+
+services:
+    faker:
+        class: Faker\Generator
