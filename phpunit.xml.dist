@@ -10,16 +10,16 @@
          processIsolation="false"
          stopOnFailure="false"
          bootstrap="vendor/autoload.php"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
+    <coverage>
+        <include>
+            <directory>./Tests</directory>
+        </include>
+    </coverage>
     <testsuites>
         <testsuite name="AnonymizerBundle test suite">
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./Tests</directory>
-        </whitelist>
-    </filter>
 </phpunit>
