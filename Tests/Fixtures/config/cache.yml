@@ -1,5 +1,4 @@
 framework:
-    annotations: true
     cache:
         system: cache.adapter.system
 
