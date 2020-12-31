@@ -10,7 +10,7 @@ services:
             - { name: 'sharktank_anonymizer.handler' }
 
     sharktank_anonymizer.handler.hash:
-        class: PHPSharkTank\Anonymizer\Handler\HashHandlerHandler
+        class: PHPSharkTank\Anonymizer\Handler\HashHandler
         arguments: ['hash']
         tags:
             - { name: 'sharktank_anonymizer.handler' }
