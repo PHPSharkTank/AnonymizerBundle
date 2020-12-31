@@ -9,9 +9,20 @@ services:
         tags:
             - { name: 'sharktank_anonymizer.handler' }
 
+    sharktank_anonymizer.handler.hash:
+        class: PHPSharkTank\Anonymizer\Handler\HashHandlerHandler
+        arguments: ['hash']
+        tags:
+            - { name: 'sharktank_anonymizer.handler' }
+
     sharktank_anonymizer.handler.simple_registry:
         class: PHPSharkTank\Anonymizer\Registry\HandlerRegistry
         arguments: [[]]
+        tags:
+            - { name: 'sharktank_anonymizer.handler_registry' }
+
+    sharktank_anonymizer.handler_registry.hash:
+        class: PHPSharkTank\Anonymizer\Registry\HashHandlerRegistry
         tags:
             - { name: 'sharktank_anonymizer.handler_registry' }
 
