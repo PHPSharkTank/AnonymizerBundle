@@ -3,4 +3,9 @@ services:
         class: PHPSharkTank\Anonymizer\Loader\AnnotationLoader
         arguments: ['@annotations.reader']
 
+    sharktank_anonymizer.mapping.yaml_loader:
+        class: PHPSharkTank\Anonymizer\Loader\YamlFileLoader
+        decorates: 'sharktank_anonymizer.mapping.annotation_loader'
+        arguments: ['@sharktank_anonymizer.mapping.yaml_loader.inner']
+
     sharktank_anonymizer.mapping_loader: '@sharktank_anonymizer.mapping.annotation_loader'

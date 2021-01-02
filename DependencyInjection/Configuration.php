@@ -44,6 +44,10 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('yaml_config')
+                    ->prototype('scalar')
+                    ->end()
+                ->end()
         ->end();
 
         return $treeBuilder;

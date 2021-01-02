@@ -42,6 +42,14 @@ class AnonymizerExtension extends Extension
             $container->setAlias('sharktank_anonymizer.faker', $config['faker']['id']);
         }
 
+        if ($config['yaml_config']) {
+            $yamlLoaderDefinition = $container->findDefinition('sharktank_anonymizer.mapping.yaml_loader');
+            foreach ($config['yaml_config'] as $path) {
+                $yamlLoaderDefinition->addMethodCall('addYamlPath', [$path]);
+            }
+
+        }
+
         if ($config['cache']['enabled']) {
             $id = (string) $container->getAlias('sharktank_anonymizer.mapping_loader');
             $cacheDefinition = new Definition(CachingLoader::class);
@@ -54,7 +62,7 @@ class AnonymizerExtension extends Extension
 
             $container->setDefinition('sharktank_anonymizer.mapping_loader', $cacheDefinition);
         } else {
-            $container->setAlias('sharktank_anonymizer.mapping_loader', 'sharktank_anonymizer.mapping.annotation_loader');
+            $container->setAlias('sharktank_anonymizer.mapping_loader', 'sharktank_anonymizer.mapping.yaml_loader');
         }
 
         if (method_exists($container, 'registerForAutoconfiguration')) {
