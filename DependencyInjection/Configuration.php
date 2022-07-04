@@ -14,7 +14,7 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('sharktank_anonymizer');
 
-        $this->getRootNode($treeBuilder, 'sharktank_anonymizer')
+        $treeBuilder->getRootNode()
             ->children()
                 ->booleanNode('enable_alias')->defaultTrue()->end()
                 ->arrayNode('exclusion_strategy')
@@ -51,19 +51,5 @@ class Configuration implements ConfigurationInterface
         ->end();
 
         return $treeBuilder;
-    }
-
-    /**
-     * Proxy to get root node for Symfony < 4.2.
-     *
-     * @return ArrayNodeDefinition
-     */
-    protected function getRootNode(TreeBuilder $treeBuilder, string $name)
-    {
-        if (\method_exists($treeBuilder, 'getRootNode')) {
-            return $treeBuilder->getRootNode();
-        } else {
-            return $treeBuilder->root($name);
-        }
     }
 }
