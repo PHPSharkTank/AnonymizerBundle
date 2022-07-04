@@ -4,18 +4,18 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": "^8.0",
-        "php-shark-tank/anonymizer": "dev-php8.0",
-        "symfony/config": "^3.4 || ^4.0 || ^5.0",
-        "symfony/dependency-injection": "^3.4 || ^4.0 || ^5.0",
-        "symfony/http-kernel": "^3.4 || ^4.0 || ^5.0",
-        "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
+        "php": "^8.1",
+        "php-shark-tank/anonymizer": "^1.0.1",
+        "symfony/config": "^4.0 || ^5.0 || ^6.0",
+        "symfony/dependency-injection": "^4.0 || ^5.0 || ^6.0",
+        "symfony/http-kernel": "^4.0 || ^5.0 || ^6.0",
+        "symfony/yaml": "^4.0 || ^5.0 || ^6.0"
     },
     "require-dev": {
-        "nyholm/symfony-bundle-test": "^1.6",
+        "nyholm/symfony-bundle-test": "^2.0",
         "phpunit/phpunit": "^9",
-        "symfony/expression-language": "^3.4 || ^4.0 || ^5.0",
-        "symfony/phpunit-bridge": "^5.2"
+        "symfony/expression-language": "^4.0 || ^5.0 || ^6.0",
+        "symfony/phpunit-bridge": "^6.1"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +37,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev"
+            "dev-master": "1.0-dev"
         }
     }
 }
