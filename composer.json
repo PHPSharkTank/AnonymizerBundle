@@ -12,7 +12,7 @@
         "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
     },
     "require-dev": {
-        "nyholm/symfony-bundle-test": "^1.6",
+        "nyholm/symfony-bundle-test": "^2.0",
         "phpunit/phpunit": "^8",
         "symfony/expression-language": "^3.4 || ^4.0 || ^5.0",
         "symfony/phpunit-bridge": "^4.4"
