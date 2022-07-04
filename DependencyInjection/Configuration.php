@@ -45,6 +45,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('yaml_config')
                     ->prototype('scalar')
+                    ->defaultValue([])
                     ->end()
                 ->end()
         ->end();

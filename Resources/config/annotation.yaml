@@ -1,10 +1,15 @@
 services:
-    sharktank_anonymizer.mapping.annotation_loader:
-        class: PHPSharkTank\Anonymizer\Loader\AnnotationLoader
+    sharktank_anonymizer.mapping.attribute_loader:
+        class: PHPSharkTank\Anonymizer\Loader\AttributeLoader
 
     sharktank_anonymizer.mapping.yaml_loader:
         class: PHPSharkTank\Anonymizer\Loader\YamlFileLoader
-        decorates: 'sharktank_anonymizer.mapping.annotation_loader'
-        arguments: ['@sharktank_anonymizer.mapping.yaml_loader.inner']
+        arguments:
+            - []
 
-    sharktank_anonymizer.mapping_loader: '@sharktank_anonymizer.mapping.annotation_loader'
+    sharktank_anonymizer.mapping.chain_loader:
+        class: PHPSharkTank\Anonymizer\Loader\ChainLoader
+        arguments:
+            - ['@sharktank_anonymizer.mapping.attribute_loader', '@sharktank_anonymizer.mapping.yaml_loader']
+
+    sharktank_anonymizer.mapping_loader: '@sharktank_anonymizer.mapping.chain_loader'

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHPSharkTank\AnonymizerBundle\DependencyInjection;
 
 use PHPSharkTank\Anonymizer\AnonymizerInterface;
-use PHPSharkTank\Anonymizer\ExclusionStrategy\DefaultExclusionStrategy;
+use PHPSharkTank\Anonymizer\ExclusionStrategy\ChainExclusionStrategy;
 use PHPSharkTank\Anonymizer\ExclusionStrategy\ExpressionExclusionStrategy;
 use PHPSharkTank\Anonymizer\Handler\HandlerInterface;
 use PHPSharkTank\Anonymizer\Loader\CachingLoader;
@@ -59,8 +59,6 @@ class AnonymizerExtension extends Extension
             ]);
 
             $container->setDefinition('sharktank_anonymizer.mapping_loader', $cacheDefinition);
-        } else {
-            $container->setAlias('sharktank_anonymizer.mapping_loader', 'sharktank_anonymizer.mapping.yaml_loader');
         }
 
         if (method_exists($container, 'registerForAutoconfiguration')) {
@@ -75,12 +73,6 @@ class AnonymizerExtension extends Extension
 
     private function loadExclusionStrategies(array $config, ContainerBuilder $container): void
     {
-        if ($this->isConfigEnabled($container, $config['default'])) {
-            $definition = new Definition(DefaultExclusionStrategy::class);
-            $definition->addTag('sharktank_anonymizer.exclusion_strategy');
-
-            $container->setDefinition('sharktank_anonymizer.exclusion_strategy.default', $definition);
-        }
         if ($this->isConfigEnabled($container, $config['expression'])) {
             if (!class_exists(ExpressionLanguage::class)) {
                 throw new PackageMissingException('symfony/expression-language');
