@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PHPSharkTank\AnonymizerBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -46,6 +45,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('yaml_config')
                     ->prototype('scalar')
+                    ->ignoreExtraKeys(false)
                     ->end()
                 ->end()
         ->end();

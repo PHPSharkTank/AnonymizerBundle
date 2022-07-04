@@ -10,9 +10,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class HandlerCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('sharktank_anonymizer.handler.simple_registry')) {
+        if (!$container->has('sharktank_anonymizer.handler.simple_registry')) {
             return;
         }
 

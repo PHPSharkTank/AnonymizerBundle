@@ -9,18 +9,19 @@ use PHPSharkTank\AnonymizerBundle\DependencyInjection\CompilerPass\ExclusionStra
 use PHPSharkTank\AnonymizerBundle\DependencyInjection\CompilerPass\HandlerCompilerPass;
 use PHPSharkTank\AnonymizerBundle\DependencyInjection\CompilerPass\HandlerRegistryCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AnonymizerBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new HandlerCompilerPass());
         $container->addCompilerPass(new HandlerRegistryCompilerPass());
         $container->addCompilerPass(new ExclusionStrategyCompilerPass());
     }
 
-    public function getContainerExtension()
+    public function getContainerExtension(): ExtensionInterface
     {
         return new AnonymizerExtension();
     }

@@ -11,7 +11,6 @@ use PHPSharkTank\Anonymizer\Handler\HandlerInterface;
 use PHPSharkTank\Anonymizer\Loader\CachingLoader;
 use PHPSharkTank\Anonymizer\Registry\HandlerRegistryInterface;
 use PHPSharkTank\AnonymizerBundle\Exception\PackageMissingException;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -22,7 +21,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class AnonymizerExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -30,14 +29,14 @@ class AnonymizerExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
-        $this->loadMappingDrivers($config, $loader, $container);
+        $this->loadMappingDrivers($loader);
         $this->loadExclusionStrategies($config['exclusion_strategy'], $container);
 
         if ($config['enable_alias']) {
             $container->setAlias('anonymizer', 'sharktank_anonymizer.anonymizer')->setPublic(true);
         }
 
-        if ($config['faker']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['faker'])) {
             $loader->load('faker.yaml');
             $container->setAlias('sharktank_anonymizer.faker', $config['faker']['id']);
         }
@@ -47,10 +46,9 @@ class AnonymizerExtension extends Extension
             foreach ($config['yaml_config'] as $path) {
                 $yamlLoaderDefinition->addMethodCall('addYamlPath', [$path]);
             }
-
         }
 
-        if ($config['cache']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['cache'])) {
             $id = (string) $container->getAlias('sharktank_anonymizer.mapping_loader');
             $cacheDefinition = new Definition(CachingLoader::class);
 
@@ -77,13 +75,13 @@ class AnonymizerExtension extends Extension
 
     private function loadExclusionStrategies(array $config, ContainerBuilder $container): void
     {
-        if ($config['default']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['default'])) {
             $definition = new Definition(DefaultExclusionStrategy::class);
             $definition->addTag('sharktank_anonymizer.exclusion_strategy');
 
             $container->setDefinition('sharktank_anonymizer.exclusion_strategy.default', $definition);
         }
-        if ($config['expression']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['expression'])) {
             if (!class_exists(ExpressionLanguage::class)) {
                 throw new PackageMissingException('symfony/expression-language');
             }
@@ -100,12 +98,12 @@ class AnonymizerExtension extends Extension
         }
     }
 
-    private function loadMappingDrivers(array $config, LoaderInterface $loader, ContainerBuilder $container): void
+    private function loadMappingDrivers(YamlFileLoader $loader): void
     {
         $loader->load('annotation.yaml');
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'sharktank_anonymizer';
     }

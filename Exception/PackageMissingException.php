@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PHPSharkTank\AnonymizerBundle\Exception;
 
-use Throwable;
-
 class PackageMissingException extends \Exception
 {
     public function __construct(string $package)
