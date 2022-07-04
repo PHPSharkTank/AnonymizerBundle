@@ -7,7 +7,7 @@
         "php": ">=7.1",
         "php-shark-tank/anonymizer": "^1.0@dev",
         "symfony/config": "^3.4 || ^4.0 || ^5.0",
-        "symfony/dependency-injection": "^3.4 || ^4.0 || ^5.0",
+        "symfony/dependency-injection": "^6.0.10",
         "symfony/http-kernel": "^3.4 || ^4.0 || ^5.0",
         "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
     },
