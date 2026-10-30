@@ -14,7 +14,7 @@
 >
     <coverage>
         <include>
-            <directory>./Tests</directory>
+            <directory>./src</directory>
         </include>
     </coverage>
     <testsuites>

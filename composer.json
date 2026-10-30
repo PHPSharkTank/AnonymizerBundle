@@ -19,7 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PHPSharkTank\\AnonymizerBundle\\": ""
+            "PHPSharkTank\\AnonymizerBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PHPSharkTank\\AnonymizerBundle\\Tests\\": "Tests"
         }
     },
     "authors": [
