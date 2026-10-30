@@ -9,7 +9,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/php-shark-tank/anonymizer-bundle)](https://packagist.org/packages/php-shark-tank/anonymizer-bundle)
 [![PHP Version](https://img.shields.io/packagist/dependency-v/php-shark-tank/anonymizer-bundle/php)](https://packagist.org/packages/php-shark-tank/anonymizer-bundle)
 [![Symfony Version](https://img.shields.io/packagist/dependency-v/php-shark-tank/anonymizer-bundle/symfony/http-kernel?label=symfony)](https://packagist.org/packages/php-shark-tank/anonymizer-bundle)
-[![License](https://img.shields.io/packagist/l/php-shark-tank/anonymizer-bundle)](https://packagist.org/packages/php-shark-tank/anonymizer-bundle)
+[![License](https://img.shields.io/packagist/l/php-shark-tank/anonymizer-bundle)](LICENSE)
 
 Symfony bundle to integrate the [Anonymizer](https://github.com/PHPSharkTank/Anonymizer) library into a Symfony application.
 
