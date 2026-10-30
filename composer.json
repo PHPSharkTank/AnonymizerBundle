@@ -4,18 +4,24 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "php-shark-tank/anonymizer": "^1.1.0",
-        "symfony/config": "^4.4 || ^5.4 || ^6.2",
-        "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.2",
-        "symfony/http-kernel": "^4.4 || ^5.4 || ^6.2",
-        "symfony/yaml": "^4.4 || ^5.4 || ^6.2"
+        "php": ">=8.2 <8.6",
+        "php-shark-tank/anonymizer": "^1.1",
+        "symfony/config": "^6.4 || ^7.4 || ^8.1",
+        "symfony/dependency-injection": "^6.4 || ^7.4 || ^8.1",
+        "symfony/http-kernel": "^6.4 || ^7.4 || ^8.1",
+        "symfony/yaml": "^6.4 || ^7.4 || ^8.1"
     },
     "require-dev": {
-        "nyholm/symfony-bundle-test": "^2.0",
-        "phpunit/phpunit": "^9",
-        "symfony/expression-language": "^4.4 || ^5.4 || ^6.2",
-        "symfony/phpunit-bridge": "^6.2"
+        "fakerphp/faker": "^1.24",
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "kubawerlos/php-cs-fixer-custom-fixers": "^3.37",
+        "nyholm/symfony-bundle-test": "^3.1",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.3",
+        "phpstan/phpstan-symfony": "^2.1",
+        "phpunit/phpunit": "^11.5 || ^12.5 || ^13.4",
+        "symfony/expression-language": "^6.4 || ^7.4 || ^8.1",
+        "symfony/framework-bundle": "^6.4 || ^7.4 || ^8.1"
     },
     "autoload": {
         "psr-4": {
@@ -38,7 +44,10 @@
         }
     ],
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     },
     "extra": {
         "branch-alias": {
