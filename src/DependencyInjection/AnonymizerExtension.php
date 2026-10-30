@@ -29,50 +29,54 @@ class AnonymizerExtension extends Extension
         $loader->load('services.yaml');
 
         $this->loadMappingDrivers($loader);
-        $this->loadExclusionStrategies($config['exclusion_strategy'], $container);
+        $this->loadExclusionStrategies($this->arrayNode($config, 'exclusion_strategy'), $container);
 
         if ($config['enable_alias']) {
             $container->setAlias('anonymizer', 'sharktank_anonymizer.anonymizer')->setPublic(true);
         }
 
-        if ($this->isConfigEnabled($container, $config['faker'])) {
+        $fakerConfig = $this->arrayNode($config, 'faker');
+        if ($this->isConfigEnabled($container, $fakerConfig)) {
             $loader->load('faker.yaml');
-            $container->setAlias('sharktank_anonymizer.faker', $config['faker']['id']);
+            $container->setAlias('sharktank_anonymizer.faker', $this->stringNode($fakerConfig, 'id'));
         }
 
-        if ($config['yaml_config']) {
+        $yamlConfig = $this->arrayNode($config, 'yaml_config');
+        if ($yamlConfig) {
             $yamlLoaderDefinition = $container->findDefinition('sharktank_anonymizer.mapping.yaml_loader');
-            foreach ($config['yaml_config'] as $path) {
+            foreach ($yamlConfig as $path) {
                 $yamlLoaderDefinition->addMethodCall('addYamlPath', [$path]);
             }
         }
 
-        if ($this->isConfigEnabled($container, $config['cache'])) {
+        $cacheConfig = $this->arrayNode($config, 'cache');
+        if ($this->isConfigEnabled($container, $cacheConfig)) {
             $id = (string) $container->getAlias('sharktank_anonymizer.mapping_loader');
             $cacheDefinition = new Definition(CachingLoader::class);
 
             $cacheDefinition->setDecoratedService($id);
             $cacheDefinition->setArguments([
                 new Reference('sharktank_anonymizer.mapping_loader.inner'),
-                new Reference(\sprintf('cache.%s', $config['cache']['pool'])),
+                new Reference(\sprintf('cache.%s', $this->stringNode($cacheConfig, 'pool'))),
             ]);
 
             $container->setDefinition('sharktank_anonymizer.mapping_loader', $cacheDefinition);
         }
 
-        if (method_exists($container, 'registerForAutoconfiguration')) {
-            $container->registerForAutoconfiguration(HandlerInterface::class)
-                ->addTag('sharktank_anonymizer.handler');
-            $container->registerForAutoconfiguration(HandlerRegistryInterface::class)
-                ->addTag('sharktank_anonymizer.handler_registry');
+        $container->registerForAutoconfiguration(HandlerInterface::class)
+            ->addTag('sharktank_anonymizer.handler');
+        $container->registerForAutoconfiguration(HandlerRegistryInterface::class)
+            ->addTag('sharktank_anonymizer.handler_registry');
 
-            $container->setAlias(AnonymizerInterface::class, 'sharktank_anonymizer.anonymizer');
-        }
+        $container->setAlias(AnonymizerInterface::class, 'sharktank_anonymizer.anonymizer');
     }
 
+    /**
+     * @param array<mixed> $config
+     */
     private function loadExclusionStrategies(array $config, ContainerBuilder $container): void
     {
-        if ($this->isConfigEnabled($container, $config['expression'])) {
+        if ($this->isConfigEnabled($container, $this->arrayNode($config, 'expression'))) {
             if (!class_exists(ExpressionLanguage::class)) {
                 throw new PackageMissingException('symfony/expression-language');
             }
@@ -87,6 +91,36 @@ class AnonymizerExtension extends Extension
 
             $container->setDefinition('sharktank_anonymizer.exclusion_strategy.expression', $definition);
         }
+    }
+
+    /**
+     * @param array<mixed> $config
+     *
+     * @return array<mixed>
+     */
+    private function arrayNode(array $config, string $key): array
+    {
+        $value = $config[$key] ?? null;
+
+        if (!\is_array($value)) {
+            throw new \LogicException(\sprintf('The processed "%s" configuration must be an array.', $key));
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param array<mixed> $config
+     */
+    private function stringNode(array $config, string $key): string
+    {
+        $value = $config[$key] ?? null;
+
+        if (!\is_string($value)) {
+            throw new \LogicException(\sprintf('The processed "%s" configuration must be a string.', $key));
+        }
+
+        return $value;
     }
 
     private function loadMappingDrivers(YamlFileLoader $loader): void
