@@ -25,5 +25,4 @@ final class ExclusionStrategyCompilerPass implements CompilerPassInterface
 
         $definition->replaceArgument(0, $arguments);
     }
-
 }

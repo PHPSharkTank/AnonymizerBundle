@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace PHPSharkTank\AnonymizerBundle\DependencyInjection;
 
 use PHPSharkTank\Anonymizer\AnonymizerInterface;
-use PHPSharkTank\Anonymizer\ExclusionStrategy\ChainExclusionStrategy;
 use PHPSharkTank\Anonymizer\ExclusionStrategy\ExpressionExclusionStrategy;
 use PHPSharkTank\Anonymizer\Handler\HandlerInterface;
 use PHPSharkTank\Anonymizer\Loader\CachingLoader;
 use PHPSharkTank\Anonymizer\Registry\HandlerRegistryInterface;
 use PHPSharkTank\AnonymizerBundle\Exception\PackageMissingException;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
@@ -26,7 +25,7 @@ class AnonymizerExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
 
         $this->loadMappingDrivers($loader);
@@ -55,7 +54,7 @@ class AnonymizerExtension extends Extension
             $cacheDefinition->setDecoratedService($id);
             $cacheDefinition->setArguments([
                 new Reference('sharktank_anonymizer.mapping_loader.inner'),
-                new Reference(sprintf('cache.%s', $config['cache']['pool']))
+                new Reference(\sprintf('cache.%s', $config['cache']['pool'])),
             ]);
 
             $container->setDefinition('sharktank_anonymizer.mapping_loader', $cacheDefinition);
