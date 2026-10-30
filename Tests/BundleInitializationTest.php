@@ -4,95 +4,108 @@ declare(strict_types=1);
 
 namespace PHPSharkTank\AnonymizerBundle\Tests;
 
-use Faker\Generator;
-use Nyholm\BundleTest\BaseBundleTestCase;
-use Nyholm\BundleTest\CompilerPass\PublicServicePass;
+use Nyholm\BundleTest\TestKernel;
 use PHPSharkTank\Anonymizer\Anonymizer;
-use PHPSharkTank\Anonymizer\ExclusionStrategy\DefaultExclusionStrategy;
+use PHPSharkTank\Anonymizer\AnonymizerInterface;
+use PHPSharkTank\Anonymizer\ExclusionStrategy\ChainExclusionStrategy;
 use PHPSharkTank\Anonymizer\ExclusionStrategy\ExpressionExclusionStrategy;
 use PHPSharkTank\Anonymizer\Handler\FakerHandler;
 use PHPSharkTank\Anonymizer\Loader\CachingLoader;
+use PHPSharkTank\Anonymizer\Loader\ChainLoader;
 use PHPSharkTank\Anonymizer\Registry\FakerHandlerRegistry;
 use PHPSharkTank\AnonymizerBundle\AnonymizerBundle;
-use Symfony\Bridge\PhpUnit\SetUpTearDownTrait;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-class BundleInitializationTest extends BaseBundleTestCase
+class BundleInitializationTest extends KernelTestCase
 {
-    use SetUpTearDownTrait;
-
-    protected function doSetUp(): void
+    protected static function getKernelClass(): string
     {
-        $this->addCompilerPass(new PublicServicePass('|^sharktank_anonymizer*|'));
+        return TestKernel::class;
     }
 
-    protected function getBundleClass()
+    /**
+     * @param array<string, mixed> $options
+     */
+    protected static function createKernel(array $options = []): KernelInterface
     {
-        return AnonymizerBundle::class;
-    }
+        $kernel = parent::createKernel($options);
+        self::assertInstanceOf(TestKernel::class, $kernel);
 
-    protected function createKernel()
-    {
-        $kernel = parent::createKernel();
-        $kernel->addConfigFile(__DIR__.'/Fixtures/config/minimal.yml');
+        $kernel->addTestBundle(AnonymizerBundle::class);
+        $kernel->addTestCompilerPass(new class implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                foreach ($container->getDefinitions() as $id => $definition) {
+                    if (str_starts_with($id, 'sharktank_anonymizer')) {
+                        $definition->setPublic(true);
+                    }
+                }
+
+                foreach ($container->getAliases() as $id => $alias) {
+                    if (str_starts_with($id, 'sharktank_anonymizer')) {
+                        $alias->setPublic(true);
+                    }
+                }
+            }
+        });
+        $kernel->handleOptions($options);
 
         return $kernel;
     }
 
-    public function testInitBundle()
+    public function testInitBundle(): void
     {
-        $this->bootKernel();
-
-        $container = $this->getContainer();
+        $container = $this->bootWithConfig('minimal.yml');
 
         self::assertInstanceOf(Anonymizer::class, $container->get('sharktank_anonymizer.anonymizer'));
         self::assertInstanceOf(Anonymizer::class, $container->get('anonymizer'));
-
-        self::assertInstanceOf(DefaultExclusionStrategy::class, $container->get('sharktank_anonymizer.exclusion_strategy.default'));
+        self::assertInstanceOf(ChainLoader::class, $container->get('sharktank_anonymizer.mapping_loader'));
+        self::assertInstanceOf(ChainExclusionStrategy::class, $container->get('sharktank_anonymizer.exclusion_strategy'));
+        self::assertFalse($container->has('sharktank_anonymizer.handler.faker'));
+        self::assertFalse($container->has('sharktank_anonymizer.exclusion_strategy.expression'));
     }
 
-    public function testFaker()
+    public function testAutowiringAlias(): void
     {
-        if (!class_exists(Generator::class)) {
-            self::markTestSkipped('Faker library hasn\'t be installed!');
-        }
+        $container = $this->bootWithConfig('minimal.yml');
 
-        $kernel = $this->createKernel();
-        $kernel->addConfigFile(__DIR__.'/Fixtures/config/faker.yml');
-        $this->bootKernel();
+        self::assertSame($container->get('sharktank_anonymizer.anonymizer'), self::getContainer()->get(AnonymizerInterface::class));
+    }
 
-        $container = $this->getContainer();
-
-        self::assertTrue($container->has('sharktank_anonymizer.handler.faker'));
-        self::assertTrue($container->has('sharktank_anonymizer.handler_registry.faker'));
+    public function testFaker(): void
+    {
+        $container = $this->bootWithConfig('faker.yml');
 
         self::assertInstanceOf(FakerHandler::class, $container->get('sharktank_anonymizer.handler.faker'));
         self::assertInstanceOf(FakerHandlerRegistry::class, $container->get('sharktank_anonymizer.handler_registry.faker'));
     }
 
-    public function testWithCache()
+    public function testWithCache(): void
     {
-        $kernel = $this->createKernel();
-        $kernel->addConfigFile(__DIR__.'/Fixtures/config/cache.yml');
-        $this->bootKernel();
-
-        $container = $this->getContainer();
+        $container = $this->bootWithConfig('cache.yml');
 
         self::assertInstanceOf(CachingLoader::class, $container->get('sharktank_anonymizer.mapping_loader'));
     }
 
-    public function testExpressionVisitors()
+    public function testExpressionExclusionStrategy(): void
     {
-        if (!class_exists(ExpressionLanguage::class)) {
-            self::markTestSkipped('The "symfony/expression-language" has not been installed.');
-        }
-
-        $kernel = $this->createKernel();
-        $kernel->addConfigFile(__DIR__.'/Fixtures/config/expression_language.yml');
-        $this->bootKernel();
-
-        $container = $this->getContainer();
+        $container = $this->bootWithConfig('expression_language.yml');
 
         self::assertInstanceOf(ExpressionExclusionStrategy::class, $container->get('sharktank_anonymizer.exclusion_strategy.expression'));
+    }
+
+    private function bootWithConfig(string $configFile): ContainerInterface
+    {
+        $kernel = self::bootKernel([
+            'config' => static function (TestKernel $kernel) use ($configFile): void {
+                $kernel->addTestConfig(__DIR__.'/Fixtures/config/'.$configFile);
+            },
+        ]);
+
+        return $kernel->getContainer();
     }
 }
